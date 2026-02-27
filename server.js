@@ -139,7 +139,6 @@ app.post('/api/reservas', async (req, res) => {
             : 'Reserva Hotel Máncora';
 
         // 4. GENERAR EL LINK DE MERCADO PAGO
-        // (Asume que "clienteMercadoPago" y "Preference" ya están importados arriba en tu server.js)
         const preference = new Preference(clienteMercadoPago);
         const respuestaMP = await preference.create({
             body: {
@@ -152,13 +151,15 @@ app.post('/api/reservas', async (req, res) => {
                     }
                 ],
                 back_urls: {
-                    success: "https://www.google.com",
-                    failure: "https://www.google.com",
-                    pending: "https://www.google.com"
+                    success: "https://juancall.github.io/Sistema-Transaccional-Reservas-Hotel/frontend/",
+                    failure: "https://juancall.github.io/Sistema-Transaccional-Reservas-Hotel/frontend/",
+                    pending: "https://juancall.github.io/Sistema-Transaccional-Reservas-Hotel/frontend/"
                 },
                 auto_return: "approved",
-                // ¡LA PIEZA CLAVE! Le adjuntamos el ID de la reserva al pago
-                external_reference: id_reserva_creada.toString()
+                external_reference: id_reserva_creada.toString(),
+                
+                // Le decimos a MP dónde enviar el Webhook
+                notification_url: "https://sistema-transaccional-reservas-hotel.onrender.com/api/webhook" 
             }
         });
 
