@@ -336,8 +336,8 @@ app.put('/api/habitaciones/:id/estado', async (req, res) => {
     const { id } = req.params;
     const { estado_fisico } = req.body;
 
-    // Validación de seguridad: solo aceptamos estos 3 estados
-    const estadosPermitidos = ['Operativa', 'En limpieza', 'En mantenimiento'];
+    // Validación de seguridad: solo aceptamos estos 3 estados + Uso del Dueño
+    const estadosPermitidos = ['Operativa', 'En limpieza', 'En mantenimiento', 'Uso del Dueño'];
     
     if (!estadosPermitidos.includes(estado_fisico)) {
         return res.status(400).json({ error: 'Estado de habitación no válido.' });
@@ -360,6 +360,26 @@ app.put('/api/habitaciones/:id/estado', async (req, res) => {
     } catch (error) {
         console.error('Error actualizando el estado de la habitación:', error);
         res.status(500).json({ error: 'Error interno del servidor al actualizar la habitación.' });
+    }
+});
+
+// Ruta para obtener las fechas reservadas de una sola habitación (Para el Calendario)
+app.get('/api/habitaciones/:id/reservas', async (req, res) => {
+    const { id } = req.params;
+    try {
+        // Buscamos reservas futuras o actuales que NO estén canceladas
+        const resultado = await pool.query(`
+            SELECT fecha_entrada, fecha_salida 
+            FROM reservas 
+            WHERE id_habitacion = $1 
+            AND estado_reserva != 'Cancelada' 
+            AND fecha_salida >= CURRENT_DATE
+        `, [id]);
+        
+        res.json(resultado.rows);
+    } catch (error) {
+        console.error('Error obteniendo fechas:', error);
+        res.status(500).json({ error: 'Error interno' });
     }
 });
 
