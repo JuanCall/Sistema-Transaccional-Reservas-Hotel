@@ -153,16 +153,18 @@
     <div id="modal-calendario" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modal-titulo-hab">Calendario H001</h3>
+                <h3 id="modal-titulo-hab">Calendario Habitación</h3>
                 <button class="btn-cerrar" onclick="cerrarCalendario()">✖</button>
             </div>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Disponibilidad para los próximos 30 días:</p>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">
+                Vista de disponibilidad para los próximos 30 días (desde hoy):
+            </p>
             
-            <div id="calendario-grid" class="calendario-lineal">
+            <div id="calendario-grid" class="calendario-contenedor-grid">
                 </div>
             
             <div class="leyenda-calendario">
-                <span class="leyenda-item"><div class="cuadro libre"></div> Libre</span>
+                <span class="leyenda-item"><div class="cuadro libre"></div> Disponible</span>
                 <span class="leyenda-item"><div class="cuadro ocupado"></div> Reservado / Bloqueado</span>
             </div>
         </div>

@@ -573,22 +573,146 @@ tbody tr:last-child td { border-bottom: none; }
 .estado-Uso-del-Dueño { background: rgba(156, 39, 176, 0.15); color: #e040fb; }
 .estado-Uso-del-Dueño::before { background: #9c27b0; }
 
-/* Modal del Calendario */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 100; display: flex; justify-content: center; align-items: center; }
-.modal-content { background: var(--ocean-deep); padding: 25px; border-radius: 10px; border: 1px solid var(--border); width: 90%; max-width: 800px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-.modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
-.btn-cerrar { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+/* ========================================== */
+/* MODAL DEL CALENDARIO VISUAL                */
+/* ========================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+    z-index: 1000; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    animation: fadeIn 0.3s forwards;
+}
 
-/* El "Resaltador" de días */
-.calendario-lineal { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 15px; }
-.dia-caja { min-width: 45px; height: 55px; border-radius: 6px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 0.75rem; font-weight: bold; }
-.dia-caja .mes { font-size: 0.6rem; font-weight: normal; opacity: 0.8; }
-.dia-caja.libre { background: rgba(40, 167, 69, 0.15); border: 1px solid var(--confirm-dot); color: var(--confirm-dot); }
-.dia-caja.ocupado { background: rgba(220, 53, 69, 0.2); border: 1px solid var(--cancel-dot); color: #ff6b6b; text-decoration: line-through; }
+.modal-content {
+    background: var(--ocean-deep);
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    width: 95%;
+    max-width: 650px; 
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    transform: translateY(-20px);
+    animation: slideIn 0.3s forwards;
+}
 
-.leyenda-calendario { display: flex; gap: 15px; margin-top: 10px; font-size: 0.8rem; }
-.leyenda-item { display: flex; align-items: center; gap: 5px; }
-.leyenda-item .cuadro { width: 15px; height: 15px; border-radius: 3px; }
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.modal-header h3 { margin: 0; font-size: 1.4rem; color: white; }
+
+.btn-cerrar {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-cerrar:hover { color: white; transform: scale(1.1); }
+
+/* La cuadrícula (Grid) */
+.calendario-contenedor-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); 
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+/* Ajuste responsive para celulares pequeños */
+@media (max-width: 500px) {
+    .calendario-contenedor-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+    }
+}
+
+/* Estilo de los cuadritos de los días (Cajas) */
+.dia-caja {
+    aspect-ratio: 1 / 1; 
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: 0.2s;
+    border: 1px solid transparent;
+}
+
+.dia-caja .mes {
+    font-size: 0.65rem;
+    font-weight: normal;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-top: 2px;
+}
+
+.dia-caja.libre {
+    background: rgba(40, 167, 69, 0.15);
+    border-color: rgba(40, 167, 69, 0.3);
+    color: var(--confirm-dot);
+}
+.dia-caja.libre:hover { background: rgba(40, 167, 69, 0.25); }
+
+.dia-caja.ocupado {
+    background: rgba(220, 53, 69, 0.2);
+    border-color: rgba(220, 53, 69, 0.4);
+    color: #ff6b6b;
+    text-decoration: line-through;
+    opacity: 0.8;
+}
+
+/* Leyenda con colores */
+.leyenda-calendario {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    border-top: 1px solid var(--border);
+    padding-top: 15px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.leyenda-item .cuadro {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+}
+
+.cuadro.libre {
+    background: rgba(40, 167, 69, 0.2);
+    border-color: var(--confirm-dot);
+}
+
+.cuadro.ocupado {
+    background: rgba(220, 53, 69, 0.3);
+    border-color: var(--cancel-dot);
+}
+
+/* Animaciones simples */
+@keyframes fadeIn { to { opacity: 1; } }
+@keyframes slideIn { to { transform: translateY(0); } }
 
 /* Action select */
 .action-select {
