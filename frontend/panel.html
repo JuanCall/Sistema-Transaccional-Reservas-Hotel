@@ -8,7 +8,6 @@
 </head>
 <body>
 
-    <!-- ── Sidebar ── -->
     <aside class="sidebar">
         <div class="sidebar-logo">
             <span class="hotel-name">Hotel <span>Máncora</span></span>
@@ -16,11 +15,15 @@
         </div>
 
         <nav class="sidebar-nav">
-            <a class="nav-item active" href="#">
+            <a class="nav-item active" href="#" id="tab-reservas" onclick="cambiarPestana('reservas')">
                 <span class="nav-icon">📋</span>
                 Reservas
             </a>
-            <a class="nav-item" href="index.html" target="_blank">
+            <a class="nav-item" href="#" id="tab-habitaciones" onclick="cambiarPestana('habitaciones')">
+                <span class="nav-icon">🛏️</span>
+                Habitaciones
+            </a>
+            <a class="nav-item" href="index.html" target="_blank" style="margin-top: 20px;">
                 <span class="nav-icon">🌊</span>
                 Ver Sitio Web
             </a>
@@ -31,16 +34,15 @@
         </div>
     </aside>
 
-    <!-- ── Main ── -->
     <main class="main">
 
-        <!-- Top bar -->
         <header class="topbar">
             <div class="topbar-left">
-                <span class="page-title">Dashboard de Reservas</span>
+                <span class="page-title" id="topbar-title">Dashboard de Reservas</span>
                 <span class="page-subtitle" id="topbar-subtitle">Cargando...</span>
             </div>
-            <div class="topbar-right">
+            
+            <div class="topbar-right" id="controles-reservas">
                 <div class="filter-group">
                     <label for="filtro-fecha">📅</label>
                     <input type="date" id="filtro-fecha">
@@ -52,64 +54,96 @@
             </div>
         </header>
 
-        <!-- Page content -->
         <div class="page-content">
 
-            <!-- KPI Cards -->
-            <div class="kpi-grid">
-                <div class="kpi-card green">
-                    <div class="kpi-icon">💰</div>
-                    <div class="kpi-info">
-                        <span class="kpi-label">Ingresos del Mes</span>
-                        <span class="kpi-value" id="kpi-ingresos">—</span>
+            <div id="vista-reservas">
+                <div class="kpi-grid">
+                    <div class="kpi-card green">
+                        <div class="kpi-icon">💰</div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Ingresos del Mes</span>
+                            <span class="kpi-value" id="kpi-ingresos">—</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card blue">
+                        <div class="kpi-icon">✅</div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Reservas Confirmadas</span>
+                            <span class="kpi-value" id="kpi-confirmadas">—</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card yellow">
+                        <div class="kpi-icon">⏳</div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Atención Pendiente</span>
+                            <span class="kpi-value" id="kpi-pendientes">—</span>
+                        </div>
                     </div>
                 </div>
-                <div class="kpi-card blue">
-                    <div class="kpi-icon">✅</div>
-                    <div class="kpi-info">
-                        <span class="kpi-label">Reservas Confirmadas</span>
-                        <span class="kpi-value" id="kpi-confirmadas">—</span>
+
+                <div class="table-section">
+                    <div class="table-section-header">
+                        <div>
+                            <h2>Listado de Reservas <span class="results-count" id="results-count"></span></h2>
+                        </div>
                     </div>
-                </div>
-                <div class="kpi-card yellow">
-                    <div class="kpi-icon">⏳</div>
-                    <div class="kpi-info">
-                        <span class="kpi-label">Atención Pendiente</span>
-                        <span class="kpi-value" id="kpi-pendientes">—</span>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Habitación</th>
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                    <th>Origen</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpo-tabla">
+                                <tr>
+                                    <td colspan="9" class="mensaje-vacio">
+                                        <span class="loading-dots">Cargando datos</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Table -->
-            <div class="table-section">
-                <div class="table-section-header">
-                    <div>
-                        <h2>Listado de Reservas <span class="results-count" id="results-count"></span></h2>
+            <div id="vista-habitaciones" style="display: none;">
+                <div class="table-section">
+                    <div class="table-section-header">
+                        <div>
+                            <h2>Control de Inventario <span class="results-count" id="results-count-hab"></span></h2>
+                        </div>
+                        <button class="btn btn-primary" onclick="cargarHabitacionesPanel()">
+                            ↻ Actualizar
+                        </button>
                     </div>
-                </div>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Cliente</th>
-                                <th>Habitación</th>
-                                <th>Check-in</th>
-                                <th>Check-out</th>
-                                <th>Origen</th>
-                                <th>Total</th>
-                                <th>Estado</th>
-                                <th>Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cuerpo-tabla">
-                            <tr>
-                                <td colspan="9" class="mensaje-vacio">
-                                    <span class="loading-dots">Cargando datos</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nro</th>
+                                    <th>Tipo</th>
+                                    <th>Precio Noche</th>
+                                    <th>Estado Físico</th>
+                                    <th>Gestión Operativa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpo-tabla-habitaciones">
+                                <tr>
+                                    <td colspan="5" class="mensaje-vacio">
+                                        <span class="loading-dots">Cargando habitaciones</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 

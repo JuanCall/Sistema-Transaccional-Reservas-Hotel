@@ -440,6 +440,31 @@ tbody tr:hover {
 
 tbody tr:last-child td { border-bottom: none; }
 
+/* ========================================== */
+/* ESTADOS DE HABITACIONES (INVENTARIO)       */
+/* ========================================== */
+
+/* Operativa reutiliza el color verde de Confirmada */
+.estado-Operativa {
+  background: var(--confirm-bg);
+  color: var(--confirm-text);
+}
+.estado-Operativa::before { background: var(--confirm-dot); }
+
+/* En Limpieza (Azul) */
+.estado-En-limpieza {
+  background: rgba(33, 150, 243, 0.12);
+  color: #4da6ff;
+}
+.estado-En-limpieza::before { background: #2196f3; animation: pulse 2s ease-in-out infinite; }
+
+/* En Mantenimiento (Rojo/Naranja) */
+.estado-En-mantenimiento {
+  background: rgba(254, 127, 45, 0.12);
+  color: var(--sunset);
+}
+.estado-En-mantenimiento::before { background: var(--sunset); }
+
 /* ID cell */
 .cell-id {
   font-family: var(--font-display);

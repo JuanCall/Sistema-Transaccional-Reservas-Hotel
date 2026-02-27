@@ -144,6 +144,109 @@ async function cargarEstadisticas() {
     }
 }
 
+// =========================================================
+// SISTEMA DE PESTAÑAS (TABS)
+// =========================================================
+function cambiarPestana(pestana) {
+    // 1. Cambiar visualmente los botones del menú lateral
+    document.getElementById('tab-reservas').classList.remove('active');
+    document.getElementById('tab-habitaciones').classList.remove('active');
+    document.getElementById(`tab-${pestana}`).classList.add('active');
+
+    // 2. Ocultar/Mostrar las vistas correspondientes
+    document.getElementById('vista-reservas').style.display = pestana === 'reservas' ? 'block' : 'none';
+    document.getElementById('vista-habitaciones').style.display = pestana === 'habitaciones' ? 'block' : 'none';
+
+    // 3. Cambiar el título superior y ocultar filtros de fecha si estamos en habitaciones
+    const titulo = document.getElementById('topbar-title');
+    const subtitulo = document.getElementById('topbar-subtitle');
+    const controlesReservas = document.getElementById('controles-reservas');
+
+    if (pestana === 'reservas') {
+        titulo.textContent = 'Dashboard de Reservas';
+        controlesReservas.style.display = 'flex';
+        actualizarSubtitulo(); // Restaura la fecha
+    } else {
+        titulo.textContent = 'Gestión de Habitaciones';
+        subtitulo.textContent = 'Control de inventario físico';
+        controlesReservas.style.display = 'none';
+        cargarHabitacionesPanel(); // Carga la lista de habitaciones de la BD
+    }
+}
+
+// =========================================================
+// CARGAR HABITACIONES (INVENTARIO FÍSICO)
+// =========================================================
+async function cargarHabitacionesPanel() {
+    const cuerpoTabla = document.getElementById('cuerpo-tabla-habitaciones');
+    const resultsCount = document.getElementById('results-count-hab');
+    
+    cuerpoTabla.innerHTML = `<tr><td colspan="5" class="mensaje-vacio"><span class="loading-dots">Actualizando inventario</span></td></tr>`;
+
+    try {
+        const respuesta = await fetch('https://sistema-transaccional-reservas-hotel.onrender.com/api/habitaciones');
+        const habitaciones = await respuesta.json();
+
+        if (resultsCount) resultsCount.textContent = `${habitaciones.length} habitaciones`;
+        cuerpoTabla.innerHTML = '';
+
+        habitaciones.forEach((hab, i) => {
+            const fila = document.createElement('tr');
+            fila.style.animationDelay = `${i * 30}ms`;
+
+            // Formatear el estado para la clase CSS (ej: "En limpieza" -> "estado-En-limpieza")
+            const claseEstado = `estado-${hab.estado_fisico.replace(' ', '-')}`;
+
+            fila.innerHTML = `
+                <td><span class="cell-id">${hab.numero}</span></td>
+                <td><span class="client-name">${hab.tipo}</span></td>
+                <td><span class="cell-amount">S/ ${hab.precio_noche}</span></td>
+                <td><span class="badge ${claseEstado}">${hab.estado_fisico}</span></td>
+                <td>
+                    <select class="action-select" onchange="cambiarEstadoHabitacion(${hab.id_habitacion}, this.value)">
+                        <option value="" disabled selected>Cambiar estado a…</option>
+                        <option value="Operativa">🟢 Operativa</option>
+                        <option value="En limpieza">🧹 En limpieza</option>
+                        <option value="En mantenimiento">🔧 En mantenimiento</option>
+                    </select>
+                </td>
+            `;
+            cuerpoTabla.appendChild(fila);
+        });
+    } catch (error) {
+        console.error(error);
+        cuerpoTabla.innerHTML = `<tr><td colspan="5" class="mensaje-vacio">Error al cargar las habitaciones.</td></tr>`;
+    }
+}
+
+// =========================================================
+// CAMBIAR ESTADO FÍSICO DE LA HABITACIÓN
+// =========================================================
+async function cambiarEstadoHabitacion(id_habitacion, nuevoEstado) {
+    if (!confirm(`¿Estás seguro de poner la habitación en estado: "${nuevoEstado}"?`)) {
+        cargarHabitacionesPanel(); // Recargar para deshacer el select
+        return;
+    }
+
+    try {
+        const respuesta = await fetch(`https://sistema-transaccional-reservas-hotel.onrender.com/api/habitaciones/${id_habitacion}/estado`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ estado_fisico: nuevoEstado })
+        });
+
+        if (respuesta.ok) {
+            cargarHabitacionesPanel(); // Recargar la tabla para ver el nuevo color
+        } else {
+            const error = await respuesta.json();
+            alert('Error: ' + error.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error de conexión con el servidor.');
+    }
+}
+
 
 // =========================================================
 // INICIALIZACIÓN
