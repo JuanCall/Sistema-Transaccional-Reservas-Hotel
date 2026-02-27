@@ -194,8 +194,9 @@ async function cargarHabitacionesPanel() {
             const fila = document.createElement('tr');
             fila.style.animationDelay = `${i * 30}ms`;
 
-            // Formatear el estado para la clase CSS (ej: "En limpieza" -> "estado-En-limpieza")
-            const claseEstado = `estado-${hab.estado_fisico.replace(' ', '-')}`;
+            // Formatear el estado para la clase CSS usando replaceAll
+            // (ej: "Uso del Dueño" -> "estado-Uso-del-Dueño")
+            const claseEstado = `estado-${hab.estado_fisico.replaceAll(' ', '-')}`;
 
             fila.innerHTML = `
                 <td><span class="cell-id">${hab.numero}</span></td>
@@ -203,12 +204,16 @@ async function cargarHabitacionesPanel() {
                 <td><span class="cell-amount">S/ ${hab.precio_noche}</span></td>
                 <td><span class="badge ${claseEstado}">${hab.estado_fisico}</span></td>
                 <td>
-                    <select class="action-select" onchange="cambiarEstadoHabitacion(${hab.id_habitacion}, this.value)">
-                        <option value="" disabled selected>Cambiar estado a…</option>
-                        <option value="Operativa">🟢 Operativa</option>
-                        <option value="En limpieza">🧹 En limpieza</option>
-                        <option value="En mantenimiento">🔧 En mantenimiento</option>
-                    </select>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <select class="action-select" onchange="cambiarEstadoHabitacion(${hab.id_habitacion}, this.value)">
+                            <option value="" disabled selected>Cambiar estado a…</option>
+                            <option value="Operativa">🟢 Operativa</option>
+                            <option value="En limpieza">🧹 En limpieza</option>
+                            <option value="En mantenimiento">🔧 En mantenimiento</option>
+                            <option value="Uso del Dueño">👑 Uso del Dueño</option>
+                        </select>
+                        <button class="btn btn-ghost" onclick="abrirCalendario(${hab.id_habitacion}, '${hab.numero}')" style="padding: 5px 10px; height: auto;" title="Ver Calendario de Reservas">📅</button>
+                    </div>
                 </td>
             `;
             cuerpoTabla.appendChild(fila);
@@ -247,6 +252,69 @@ async function cambiarEstadoHabitacion(id_habitacion, nuevoEstado) {
     }
 }
 
+// =========================================================
+// LÓGICA DEL CALENDARIO VISUAL (EL RESALTADOR)
+// =========================================================
+function cerrarCalendario() {
+    document.getElementById('modal-calendario').style.display = 'none';
+}
+
+async function abrirCalendario(id_habitacion, numeroHab) {
+    document.getElementById('modal-titulo-hab').innerText = `Calendario Habitación ${numeroHab}`;
+    const contenedorGrid = document.getElementById('calendario-grid');
+    contenedorGrid.innerHTML = '<span class="loading-dots">Dibujando calendario</span>';
+    
+    // Mostramos el modal
+    document.getElementById('modal-calendario').style.display = 'flex';
+
+    try {
+        // Pedimos las fechas bloqueadas al servidor
+        const res = await fetch(`https://sistema-transaccional-reservas-hotel.onrender.com/api/habitaciones/${id_habitacion}/reservas`);
+        const reservas = await res.json();
+        
+        contenedorGrid.innerHTML = ''; // Limpiamos el texto de carga
+
+        // Generamos los próximos 30 días
+        const hoy = new Date();
+        hoy.setHours(0,0,0,0); // Normalizamos a medianoche local
+
+        for (let i = 0; i < 30; i++) {
+            // Calculamos el día de la caja actual
+            const fechaCaja = new Date(hoy);
+            fechaCaja.setDate(hoy.getDate() + i);
+            
+            const diaNum = fechaCaja.getDate().toString().padStart(2, '0');
+            const mesNombre = fechaCaja.toLocaleString('es-PE', { month: 'short' }).toUpperCase();
+            
+            // Verificamos si este día cae dentro de alguna reserva
+            let estaOcupado = false;
+            for (const r of reservas) {
+                // Hay que lidiar con el Timezone de UTC a Local
+                const inDate = new Date(r.fecha_entrada);
+                inDate.setMinutes(inDate.getMinutes() + inDate.getTimezoneOffset());
+                
+                const outDate = new Date(r.fecha_salida);
+                outDate.setMinutes(outDate.getMinutes() + outDate.getTimezoneOffset());
+
+                // Lógica de "resaltador": Si la fecha de la caja es mayor o igual al check-in Y estrictamente menor al check-out (porque el día de salida la habitación se libera a medio día)
+                if (fechaCaja >= inDate && fechaCaja < outDate) {
+                    estaOcupado = true;
+                    break;
+                }
+            }
+
+            // Dibujamos el cuadrito
+            const cajaHTML = document.createElement('div');
+            cajaHTML.className = `dia-caja ${estaOcupado ? 'ocupado' : 'libre'}`;
+            cajaHTML.innerHTML = `${diaNum}<span class="mes">${mesNombre}</span>`;
+            
+            contenedorGrid.appendChild(cajaHTML);
+        }
+
+    } catch (error) {
+        contenedorGrid.innerHTML = '<span style="color:red;">Error cargando el calendario.</span>';
+    }
+}
 
 // =========================================================
 // INICIALIZACIÓN

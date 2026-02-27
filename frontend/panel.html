@@ -150,6 +150,24 @@
         </div>
     </main>
 
+    <div id="modal-calendario" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-titulo-hab">Calendario H001</h3>
+                <button class="btn-cerrar" onclick="cerrarCalendario()">✖</button>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Disponibilidad para los próximos 30 días:</p>
+            
+            <div id="calendario-grid" class="calendario-lineal">
+                </div>
+            
+            <div class="leyenda-calendario">
+                <span class="leyenda-item"><div class="cuadro libre"></div> Libre</span>
+                <span class="leyenda-item"><div class="cuadro ocupado"></div> Reservado / Bloqueado</span>
+            </div>
+        </div>
+    </div>
+
     <script src="js/panelApp.js"></script>
 </body>
 </html>
