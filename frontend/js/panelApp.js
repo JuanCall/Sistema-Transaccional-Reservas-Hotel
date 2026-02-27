@@ -38,7 +38,7 @@ async function cambiarEstado(id_reserva, nuevoEstado) {
         return;
     }
     try {
-        const respuesta = await fetch(`http://localhost:3000/api/reservas/${id_reserva}/estado`, {
+        const respuesta = await fetch(`https://sistema-transaccional-reservas-hotel.onrender.com/api/reservas/${id_reserva}/estado`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ estado_reserva: nuevoEstado })
@@ -72,8 +72,8 @@ async function cargarReservas() {
         const inputFiltro = document.getElementById('filtro-fecha');
         const fechaSeleccionada = inputFiltro ? inputFiltro.value : '';
         const url = fechaSeleccionada
-            ? `http://localhost:3000/api/reservas?fecha=${fechaSeleccionada}`
-            : `http://localhost:3000/api/reservas`;
+            ? `https://sistema-transaccional-reservas-hotel.onrender.com/api/reservas?fecha=${fechaSeleccionada}`
+            : `https://sistema-transaccional-reservas-hotel.onrender.com/api/reservas`;
 
         const respuesta = await fetch(url);
         const reservas = await respuesta.json();
@@ -130,7 +130,7 @@ async function cargarReservas() {
 // =========================================================
 async function cargarEstadisticas() {
     try {
-        const respuesta = await fetch('http://localhost:3000/api/estadisticas');
+        const respuesta = await fetch('https://sistema-transaccional-reservas-hotel.onrender.com/api/estadisticas');
         const stats = await respuesta.json();
 
         document.getElementById('kpi-ingresos').textContent    = `S/ ${parseFloat(stats.ingresos_totales).toFixed(2)}`;

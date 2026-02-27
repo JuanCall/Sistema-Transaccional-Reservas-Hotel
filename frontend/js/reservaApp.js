@@ -129,7 +129,7 @@ document.getElementById('formulario-reserva').addEventListener('submit', async f
     };
 
     try {
-        const respuesta = await fetch('http://localhost:3000/api/reservas', {
+        const respuesta = await fetch('https://sistema-transaccional-reservas-hotel.onrender.com/api/reservas', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datosReserva)

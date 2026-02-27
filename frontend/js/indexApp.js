@@ -1,7 +1,7 @@
 // CARGAR CATÁLOGO EN LA PÁGINA PRINCIPAL
 async function cargarCatalogo() {
     try {
-        const respuesta = await fetch('http://localhost:3000/api/habitaciones');
+        const respuesta = await fetch('https://sistema-transaccional-reservas-hotel.onrender.com/api/habitaciones');
         const habitaciones = await respuesta.json();
         const grid = document.getElementById('grid-habitaciones');
 
