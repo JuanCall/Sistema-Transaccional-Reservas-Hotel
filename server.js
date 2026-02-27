@@ -327,6 +327,42 @@ app.post('/api/pagos/crear-preferencia', async (req, res) => {
     }
 });
 
+// ==========================================
+// API: GESTIÓN DE HABITACIONES (INVENTARIO FÍSICO)
+// ==========================================
+
+// Ruta para actualizar el estado físico de una habitación
+app.put('/api/habitaciones/:id/estado', async (req, res) => {
+    const { id } = req.params;
+    const { estado_fisico } = req.body;
+
+    // Validación de seguridad: solo aceptamos estos 3 estados
+    const estadosPermitidos = ['Operativa', 'En limpieza', 'En mantenimiento'];
+    
+    if (!estadosPermitidos.includes(estado_fisico)) {
+        return res.status(400).json({ error: 'Estado de habitación no válido.' });
+    }
+
+    try {
+        const resultado = await pool.query(
+            'UPDATE habitaciones SET estado_fisico = $1 WHERE id_habitacion = $2 RETURNING *',
+            [estado_fisico, id]
+        );
+
+        if (resultado.rowCount === 0) {
+            return res.status(404).json({ error: 'Habitación no encontrada.' });
+        }
+
+        res.json({ 
+            mensaje: `La habitación ahora está ${estado_fisico}`,
+            habitacion: resultado.rows[0] 
+        });
+    } catch (error) {
+        console.error('Error actualizando el estado de la habitación:', error);
+        res.status(500).json({ error: 'Error interno del servidor al actualizar la habitación.' });
+    }
+});
+
 // =========================================================
 // WEBHOOK: MERCADO PAGO AVISA QUE EL PAGO SE COMPLETÓ (POST)
 // =========================================================
