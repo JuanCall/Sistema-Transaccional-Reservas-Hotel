@@ -18,15 +18,15 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Ruta para ver las habitaciones desde la base de datos real
+// Ruta para obtener todas las habitaciones (con orden forzado)
 app.get('/api/habitaciones', async (req, res) => {
     try {
-        // Hacemos una consulta SQL real a Supabase
-        const resultado = await pool.query('SELECT * FROM habitaciones');
+        // ORDER BY numero ASC
+        const resultado = await pool.query('SELECT * FROM habitaciones ORDER BY numero ASC');
         res.json(resultado.rows);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al obtener las habitaciones' });
+        console.error('Error obteniendo habitaciones:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
 
