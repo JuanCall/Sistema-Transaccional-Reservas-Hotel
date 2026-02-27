@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Máncora — Reservas Oficiales</title>
+    <link rel="stylesheet" href="css/indexStyles.css">
+</head>
+<body>
+
+    <!-- Sticky Navbar -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="nav-brand">Hotel <span>Máncora</span></a>
+        <ul class="nav-links">
+            <li><a href="#catalogo">Habitaciones</a></li>
+            <li><a href="#ubicacion">Ubicación</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+        <div class="hero-content">
+            <p class="hero-eyebrow">Máncora, Perú · Norte Chico</p>
+            <h1>Descanso y <em>Mar</em><br>en Máncora</h1>
+            <p>Vive la experiencia perfecta en el norte del Perú</p>
+            <a href="#catalogo" class="btn-hero">Ver Habitaciones</a>
+        </div>
+        <div class="hero-scroll">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </header>
+
+    <!-- Features Strip -->
+    <section class="features-strip">
+        <div class="features-inner">
+            <div class="feature-item">
+                <span class="feature-icon">🌊</span>
+                <h4>A Pasos del Mar</h4>
+                <p>Acceso directo a la playa más bella de Máncora</p>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🍽️</span>
+                <h4>Desayuno Incluido</h4>
+                <p>Buffet con productos locales cada mañana</p>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🏄</span>
+                <h4>Surf & Actividades</h4>
+                <p>Clases de surf y tours disponibles todo el año</p>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✨</span>
+                <h4>Atención 24h</h4>
+                <p>Concierge disponible en cualquier momento</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rooms Catalogue -->
+    <div class="container" id="catalogo">
+        <p class="section-eyebrow">Nuestras Habitaciones</p>
+        <h2 class="section-title">Elige tu espacio perfecto</h2>
+        <p class="section-subtitle">Cada habitación ha sido diseñada para ofrecerte el máximo confort frente al Pacífico.</p>
+        <div class="section-divider"><div class="divider-icon"></div></div>
+
+        <div id="grid-habitaciones" class="grid-habitaciones">
+            <p style="text-align:center; width:100%; color: var(--text-muted); font-family: var(--font-body); font-weight:300;">
+                Cargando habitaciones…
+            </p>
+        </div>
+    </div>
+
+    <!-- Location -->
+    <section id="ubicacion" style="background: #f0ebe3; padding: 80px 24px;">
+        <div style="max-width: 1180px; margin: 0 auto;">
+            <p class="section-eyebrow">Dónde Estamos</p>
+            <h2 class="section-title">Nuestra Ubicación</h2>
+            <p class="section-subtitle">A pasos de la mejor playa de Máncora, cerca de la zona comercial pero en un entorno tranquilo para garantizar tu descanso total.</p>
+            <div class="section-divider"><div class="divider-icon"></div></div>
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15891.890696349692!2d-81.0543!3d-4.103!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x903649db527de2dd%3A0xcda1af6c01e69cc5!2sM%C3%A1ncora%2C%20Per%C3%BA!5e0!3m2!1ses!2s!4v1700000000000!5m2!1ses!2s"
+                width="100%" height="440"
+                style="border:0; border-radius:4px; box-shadow:0 8px 32px rgba(35,61,77,0.12); display:block;"
+                allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 <strong>Hotel Máncora</strong>. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="js/indexApp.js"></script>
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 60);
+        });
+
+        // Scroll reveal with IntersectionObserver
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const delay = el.dataset.delay || 0;
+                    setTimeout(() => el.classList.add('visible'), delay);
+                    observer.unobserve(el);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        // Observe feature items
+        document.querySelectorAll('.feature-item').forEach((el, i) => {
+            el.dataset.delay = i * 100;
+            observer.observe(el);
+        });
+
+        // Observe room cards (called after dynamic render)
+        window.observeCards = () => {
+            document.querySelectorAll('.card-habitacion').forEach((el, i) => {
+                el.dataset.delay = i * 120;
+                observer.observe(el);
+            });
+        };
+    </script>
+</body>
+</html>

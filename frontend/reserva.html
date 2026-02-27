@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completar Reserva — Hotel Máncora</title>
+    <link rel="stylesheet" href="css/indexStyles.css">
+</head>
+<body style="background-color: #f0ebe3; min-height: 100vh;">
+
+    <!-- Header -->
+    <header class="reserva-header">
+        <a href="index.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Volver
+        </a>
+        <div class="brand">Hotel <span>Máncora</span></div>
+        <div style="width: 80px;"></div><!-- Spacer -->
+    </header>
+
+    <!-- Step indicator -->
+    <div style="background: var(--ocean); padding: 12px 40px;">
+        <div style="max-width: 1180px; margin: 0 auto; display: flex; align-items: center; gap: 10px; font-family: var(--font-body);">
+            <span style="width:22px; height:22px; background: var(--sunset); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; color:white; flex-shrink:0;">1</span>
+            <span style="font-size:0.75rem; color:rgba(255,255,255,0.9); font-weight:500; letter-spacing:0.1em; text-transform:uppercase;">Selección</span>
+            <div style="flex:1; height:1px; background:rgba(255,255,255,0.15);"></div>
+            <span style="width:22px; height:22px; background: var(--sunset); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; color:white; flex-shrink:0;">2</span>
+            <span style="font-size:0.75rem; color:rgba(255,255,255,0.9); font-weight:500; letter-spacing:0.1em; text-transform:uppercase;">Datos y Pago</span>
+            <div style="flex:1; height:1px; background:rgba(255,255,255,0.15);"></div>
+            <span style="width:22px; height:22px; background: rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; color:rgba(255,255,255,0.5); flex-shrink:0;">3</span>
+            <span style="font-size:0.75rem; color:rgba(255,255,255,0.4); font-weight:500; letter-spacing:0.1em; text-transform:uppercase;">Confirmación</span>
+        </div>
+    </div>
+
+    <div class="container" style="padding-top: 40px; padding-bottom: 60px;">
+        <div class="contenedor-split">
+
+            <!-- Formulario -->
+            <div class="columna-formulario">
+                <h2 class="form-section-title">Completa tus<br><em style="font-style:italic; color:var(--sunset);">datos</em></h2>
+
+                <form id="formulario-reserva" autocomplete="on">
+                    <input type="hidden" id="habitacion-id">
+
+                    <div class="row-2">
+                        <div class="form-group">
+                            <label>Nombre Completo</label>
+                            <input type="text" id="nombre" required placeholder="Carlos Mendoza" autocomplete="name">
+                        </div>
+                        <div class="form-group">
+                            <label>DNI / Pasaporte</label>
+                            <input type="text" id="dni" required placeholder="Número de documento">
+                        </div>
+                    </div>
+
+                    <div class="row-2">
+                        <div class="form-group">
+                            <label>Correo Electrónico</label>
+                            <input type="email" id="email" required placeholder="correo@ejemplo.com" autocomplete="email">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono (WhatsApp)</label>
+                            <input type="text" id="telefono" required placeholder="987 654 321" autocomplete="tel">
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 8px;">
+                        <label style="margin-bottom:14px; font-size:0.72rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted);">Fechas de estadía</label>
+                        <div class="fechas-grid">
+                            <div class="form-group">
+                                <label>Check-in</label>
+                                <input type="date" id="entrada" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Check-out</label>
+                                <input type="date" id="salida" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total box -->
+                    <div class="total-box">
+                        <span class="total-label">Total a pagar</span>
+                        <div id="resumen-total">S/ 0.00</div>
+                    </div>
+
+                    <button type="submit" id="btn-reservar" class="btn-confirmar">
+                        Confirmar y Pagar con Mercado Pago
+                    </button>
+                    <div id="mensaje-alerta"></div>
+                </form>
+            </div>
+
+            <!-- Info de Habitación -->
+            <div class="columna-info">
+                <h2 class="info-section-title" id="detalle-titulo-hab">Cargando…</h2>
+
+                <div class="galeria-habitacion">
+                    <img id="foto-principal" src="" alt="Foto principal" class="foto-destacada">
+                    <div class="miniaturas" id="contenedor-miniaturas"></div>
+                </div>
+
+                <div class="desc-section">
+                    <h3>Descripción</h3>
+                    <p id="detalle-descripcion-hab"></p>
+
+                    <h3>Servicios Incluidos</h3>
+                    <ul class="lista-servicios">
+                        <li><span>📶</span> Wi-Fi Alta Velocidad</li>
+                        <li><span>❄️</span> Aire Acondicionado</li>
+                        <li><span>📺</span> Smart TV + Netflix</li>
+                        <li><span>🚿</span> Baño Privado</li>
+                        <li><span>🌊</span> Vista al Mar</li>
+                        <li><span>🍳</span> Desayuno Incluido</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 <strong>Hotel Máncora</strong>. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="js/reservaApp.js"></script>
+</body>
+</html>
