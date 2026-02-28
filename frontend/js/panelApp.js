@@ -172,6 +172,11 @@ function cambiarPestana(pestana) {
         controlesReservas.style.display = 'none';
         cargarHabitacionesPanel(); // Carga la lista de habitaciones de la BD
     }
+
+    // Autocerrar el menú en celulares después de hacer clic
+    if (window.innerWidth <= 768) {
+        document.querySelector('.sidebar').classList.remove('open');
+    }
 }
 
 // =========================================================
@@ -314,6 +319,14 @@ async function abrirCalendario(id_habitacion, numeroHab) {
     } catch (error) {
         contenedorGrid.innerHTML = '<span style="color:red;">Error cargando el calendario.</span>';
     }
+}
+
+// =========================================================
+// MENÚ MÓVIL (HAMBURGUESA)
+// =========================================================
+function toggleMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.classList.toggle('open');
 }
 
 // =========================================================

@@ -765,6 +765,17 @@ tbody tr:last-child td { border-bottom: none; }
   100% { content: '...'; }
 }
 
+/* Botón de menú (oculto en PC) */
+.btn-menu-movil {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 1.6rem;
+  cursor: pointer;
+  margin-right: 15px;
+}
+
 /* ══════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════ */
@@ -773,7 +784,24 @@ tbody tr:last-child td { border-bottom: none; }
 }
 
 @media (max-width: 768px) {
-  .sidebar { transform: translateX(-100%); }
+  /* Mostramos el botón hamburguesa y ajustamos el título */
+  .btn-menu-movil { display: block; }
+  .topbar-left { flex-direction: row; }
+
+  /* Corregimos la barra lateral (Sidebar) */
+  .sidebar { 
+      animation: none; /* Apagamos la animación conflictiva */
+      transform: translateX(-100%); /* Oculto por defecto */
+      transition: transform 0.3s ease; /* Deslizamiento suave */
+      box-shadow: 5px 0 20px rgba(0,0,0,0.5); /* Sombra para que flote */
+  }
+  
+  /* Clase dinámica que agregaremos con JavaScript para abrir el menú */
+  .sidebar.open { 
+      transform: translateX(0); 
+  }
+
+  /* Ajustes generales de la pantalla principal en móvil */
   .main { margin-left: 0; }
   .topbar { padding: 0 16px; }
   .page-content { padding: 20px 16px; }
