@@ -57,6 +57,20 @@
         </div>
     </section>
 
+    <div class="buscador-disponibilidad" style="background: var(--ocean-deep); padding: 20px; border-radius: 10px; margin-bottom: 30px; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; box-shadow: 0 10px 20px rgba(0,0,0,0.3); border: 1px solid var(--border);">
+        <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase;">Check-in</label>
+            <input type="date" id="buscar-checkin" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: white; color-scheme: dark;" required>
+        </div>
+        <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase;">Check-out</label>
+            <input type="date" id="buscar-checkout" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: white; color-scheme: dark;" required>
+        </div>
+        <div>
+            <button onclick="buscarHabitacionesLibres()" style="background: var(--sunset); color: white; border: none; padding: 12px 25px; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.2s; height: 43px;">🔍 Buscar Disponibilidad</button>
+        </div>
+    </div>
+    
     <!-- Rooms Catalogue -->
     <div class="container" id="catalogo">
         <p class="section-eyebrow">Nuestras Habitaciones</p>

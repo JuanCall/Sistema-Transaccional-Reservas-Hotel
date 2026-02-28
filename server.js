@@ -30,6 +30,41 @@ app.get('/api/habitaciones', async (req, res) => {
     }
 });
 
+// ==========================================
+// API: BUSCADOR DE DISPONIBILIDAD (Booking Engine)
+// ==========================================
+app.get('/api/habitaciones/disponibles', async (req, res) => {
+    const { checkin, checkout } = req.query;
+
+    if (!checkin || !checkout) {
+        return res.status(400).json({ error: 'Faltan fechas de búsqueda.' });
+    }
+
+    try {
+        // Lógica avanzada de solapamiento (Overlap):
+        // Seleccionamos todas las habitaciones operativas que NO estén en la lista de reservas
+        // para las fechas solicitadas.
+        const query = `
+            SELECT * FROM habitaciones 
+            WHERE estado_fisico = 'Operativa' 
+            AND id_habitacion NOT IN (
+                SELECT id_habitacion 
+                FROM reservas 
+                WHERE estado_reserva != 'Cancelada' 
+                AND fecha_entrada < $2 
+                AND fecha_salida > $1
+            )
+            ORDER BY numero ASC;
+        `;
+        
+        const resultado = await pool.query(query, [checkin, checkout]);
+        res.json(resultado.rows);
+    } catch (error) {
+        console.error('Error buscando disponibilidad:', error);
+        res.status(500).json({ error: 'Error interno del servidor al buscar disponibilidad.' });
+    }
+});
+
 // Ruta para CREAR una nueva habitación (POST)
 app.post('/api/habitaciones', async (req, res) => {
     try {
