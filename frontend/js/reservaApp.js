@@ -36,6 +36,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const idHabitacion = urlParams.get('id');
     const tipoHabitacion = urlParams.get('tipo');
     const precioHabitacion = urlParams.get('precio');
+    
+    // Atrapamos las fechas que vienen del buscador
+    const checkinURL = urlParams.get('checkin');
+    const checkoutURL = urlParams.get('checkout');
 
     // Si alguien entra a reserva.html sin seleccionar habitación, lo devolvemos al inicio
     if (!idHabitacion || !tipoHabitacion || !precioHabitacion) {
@@ -70,23 +74,52 @@ window.addEventListener('DOMContentLoaded', () => {
         contenedorMiniaturas.appendChild(img);
     });
 
-    // 3. CONFIGURAR FECHAS
+    // 3. CONFIGURAR FECHAS Y AUTOLLENADO
     const inputEntrada = document.getElementById('entrada');
     const inputSalida = document.getElementById('salida');
-    const hoy = new Date().toISOString().split('T')[0];
     
+    // Calculamos 'hoy' considerando la zona horaria local
+    const hoyDate = new Date();
+    hoyDate.setMinutes(hoyDate.getMinutes() - hoyDate.getTimezoneOffset());
+    const hoy = hoyDate.toISOString().split('T')[0];
+    
+    // Bloqueamos fechas pasadas en el primer calendario
     inputEntrada.setAttribute('min', hoy);
 
+    // Si la URL trajo fechas desde el buscador, las inyectamos directamente
+    if (checkinURL && checkinURL !== 'undefined') {
+        inputEntrada.value = checkinURL;
+        
+        // Calculamos el mínimo del checkout para bloquear viajes en el tiempo
+        let fechaIngresoObj = new Date(checkinURL);
+        fechaIngresoObj.setDate(fechaIngresoObj.getDate() + 1);
+        inputSalida.setAttribute('min', fechaIngresoObj.toISOString().split('T')[0]);
+    }
+
+    if (checkoutURL && checkoutURL !== 'undefined') {
+        inputSalida.value = checkoutURL;
+    }
+
+    // Lógica para cuando el usuario cambia la fecha manualmente en el formulario
     inputEntrada.addEventListener('change', function() {
         let fechaIngreso = new Date(this.value);
         fechaIngreso.setDate(fechaIngreso.getDate() + 1);
         let diaSiguiente = fechaIngreso.toISOString().split('T')[0];
+        
+        // Bloqueamos el checkout para que sea mínimo un día después del checkin
         inputSalida.setAttribute('min', diaSiguiente);
-        if (inputSalida.value && inputSalida.value <= this.value) { inputSalida.value = ''; }
+        
+        // Si el usuario tenía una salida inválida, la borramos
+        if (inputSalida.value && inputSalida.value <= this.value) { 
+            inputSalida.value = ''; 
+        }
         calcularPrecioTotal();
     });
 
     inputSalida.addEventListener('change', calcularPrecioTotal);
+
+    // NUEVO: Ejecutamos el cálculo del total inmediatamente por si las fechas ya se autollenaron
+    calcularPrecioTotal();
 });
 
 // 4. CALCULADORA DE PRECIO
