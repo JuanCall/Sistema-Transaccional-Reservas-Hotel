@@ -12,7 +12,6 @@ Su arquitectura robusta está pensada para evitar conflictos de horarios (overbo
 * **Prevención de Conflictos:** Lógica de backend estructurada para garantizar la integridad de los datos y evitar el solapamiento de reservas.
 
 ## 🛠️ Tecnologías Utilizadas
-* **Backend:** Python
 * **Base de Datos:** PostgreSQL (Alojado en Supabase / NeonTech)
 * **Frontend:** HTML5, CSS3, JavaScript
 * **Arquitectura & Control de Versiones:** Git, GitHub
